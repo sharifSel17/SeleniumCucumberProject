@@ -1,8 +1,11 @@
 package pageObjects;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.Select;
 
 public class AddCustomerPage {
     public WebDriver dr;
@@ -17,7 +20,7 @@ public class AddCustomerPage {
     By txtEmail = By.xpath("//input[@id='Email']");
     By texPassword = By.xpath("//input[@id='Password']");
     By fName = By.xpath("//input[@id='FirstName']");
-    By lName = By.xpath("//input/[@id='LastName']");
+    By lName = By.xpath("//input[@id='LastName']");
     By rdMaleGender = By.id("Gender_Male");
     By rdFemaleGender = By.id("Gender_Female");
     By DoB = By.xpath("//input[@id='DateOfBirth']");
@@ -28,10 +31,13 @@ public class AddCustomerPage {
     By roleVendors = By.xpath("//li[contains(text(),'Vendors')]");
 
     By listVendors = By.xpath("//*[@id='VendorId']");
-    By companyName = By.xpath("//input/[@id='Company']");
+    By companyName = By.xpath("//input[@id='Company']");
     By txtArea = By.xpath("//textarea[@id='AdminComment']");
     By submit = By.xpath("//button[@name='save']");
 
+    public String getPageTitle(){
+        return dr.getTitle();
+    }
     public void clickCustomerMenu(){
         dr.findElement(customers_menu).click();
     }
@@ -59,17 +65,60 @@ public class AddCustomerPage {
     public void gFemale(String feMale){
         dr.findElement(rdFemaleGender).sendKeys(feMale);
     }
-    public void datOfBirth(String dob){
+    public void setDob(String dob){
         dr.findElement(DoB).sendKeys(dob);
     }
     public void setCompanyName(String cName){
         dr.findElement(companyName).sendKeys(cName);
     }
-    public void setCustomerRole(String role){
+    public void setCustomerRole(String role) throws InterruptedException {
         if(!role.equals("Vendors")){
             dr.findElement(By.xpath("//select[@id=\"SelectedCustomerRoleIds\"]/option"));
         }
+
+            dr.findElement(customerRole).click();
+            WebElement listItems;
+            Thread.sleep(4000);
+        if (role.equals("")){
+            listItems = dr.findElement(roleAdministrators);
+        }
+        else if(role.equals("")){
+            listItems = dr.findElement(roleGuests);
+        }
+        else if(role.equals("")){
+            listItems = dr.findElement(roleRegister);
+        }
+        else {
+            listItems = dr.findElement(roleVendors);
+        }
+        //listItems.click();//use either this  or bellow code
+        JavascriptExecutor js =  (JavascriptExecutor) dr;
+        js.executeScript("arguments[0].click();",listItems);
     }
+    public void setVendors(String vendors){
+        Select dropDown =new Select(dr.findElement(listVendors));
+        dropDown.selectByValue(vendors);
+    }
+
+    public void setGender(String gender){
+        if (gender.equals("Male")){
+            dr.findElement(rdMaleGender).click();
+        }
+        else if(gender.equals("Female")){
+            dr.findElement(rdFemaleGender).click();
+        }else{
+            dr.findElement(rdMaleGender).click();//default
+        }
+    }
+    public void setContent(String contentVal){
+        dr.findElement(txtArea).sendKeys(contentVal);
+    }
+    public void clickSave(){
+        dr.findElement(submit).click();
+    }
+
+
+
 
 
 
