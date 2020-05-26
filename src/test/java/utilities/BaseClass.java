@@ -6,6 +6,7 @@ import pageObjects.AddCustomerPage;
 import pageObjects.LoginPage;
 import pageObjects.SearchCustomerPage;
 
+import java.util.Properties;
 import java.util.logging.Logger;
 
 public class BaseClass {
@@ -13,7 +14,8 @@ public class BaseClass {
     public LoginPage lp;
     public AddCustomerPage addCus;
     public SearchCustomerPage sp;
-    public static Logger logger;
+    public Logger logger;
+    public Properties configProp;
 
     public static String randomEmail(){
         String randomEm = RandomStringUtils.randomAlphabetic(5);

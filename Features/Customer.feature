@@ -5,7 +5,7 @@ Feature: Customers
     And User enters Email as "admin@yourstore.com" and Password as "admin"
     And Click on Login
     Then User can view Dashboard
-
+  @sanity
   Scenario: Add a new customer
     When User click on Customers Menu
     And User click on Customers Menu Item
@@ -16,6 +16,7 @@ Feature: Customers
     Then User can view confirmation message "The new customer has been added successfully."
     And close browser
 
+  @regression
     Scenario: Search customer by EmailId
       When User click on Customers Menu
       And User click on Customers Menu Item
@@ -23,7 +24,7 @@ Feature: Customers
       When Click on search button
       Then User should found email in the search table
       And close browser
-
+  @regression
   Scenario: Search customer by Customer Name
     When User click on Customers Menu
     And User click on Customers Menu Item
