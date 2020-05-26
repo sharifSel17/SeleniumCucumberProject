@@ -3,20 +3,35 @@ package stepsDefinition;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.apache.log4j.PropertyConfigurator;
 import org.junit.Assert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import pageObjects.AddCustomerPage;
 import pageObjects.LoginPage;
+import pageObjects.SearchCustomerPage;
 import utilities.BaseClass;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.logging.Logger;
 
 public class Steps extends BaseClass {
 
     @Given("User Launch Chrome browser")
-    public void user_Launch_Chrome_browser() {
+    public void user_Launch_Chrome_browser() throws FileNotFoundException {
+
+
+        logger = Logger.getLogger("nopCommerce");
+        FileInputStream log4jConfPath = new FileInputStream("C:\\Users\\sharif.ny\\IdeaProjects\\SeleniumCucumberProject\\log4j.properties");
+        PropertyConfigurator.configure(log4jConfPath);
+
+        //PropertiesConfiguration.con("log4j.properties");
+
+
         System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir")+"\\Drivers\\chromedriver.exe");
         driver = new ChromeDriver();
+        logger.info("======Launching browser====");
         lp = new LoginPage(driver);
     }
 
@@ -29,12 +44,14 @@ public class Steps extends BaseClass {
 
     @When("User enters Email as {string} and Password as {string}")
     public void user_enters_Email_as_and_Password_as(String email, String password) {
+        logger.info("======Entering Email & Password=====");
         lp.setUserEmail(email);
         lp.setUserPassword(password);
     }
 
     @When("Click on Login")
     public void click_on_Login() throws InterruptedException {
+        logger.info("======Logged in Successful=====");
         lp.submit();
         Thread.sleep(3000);
     }
@@ -51,6 +68,7 @@ public class Steps extends BaseClass {
 
     @When("User click on Log out link")
     public void user_click_on_Log_out_link() throws InterruptedException {
+        logger.info("======Logout Successful=======");
         lp.logout();
     }
 
@@ -74,6 +92,7 @@ public class Steps extends BaseClass {
 
     @When("User click on Customers Menu")
     public void user_click_on_Customers_Menu() throws InterruptedException {
+        logger.info("======Clicking Customer Menu=====");
         Thread.sleep(3000);
         addCus.clickCustomerMenu();
     }
@@ -81,10 +100,12 @@ public class Steps extends BaseClass {
     @When("User click on Customers Menu Item")
     public void user_click_on_Customers_Menu_Item() throws InterruptedException {
         Thread.sleep(2000);
+        logger.info("======Clicking Customer Menu Item=====");
         addCus.clickCustomerMenuItems();
     }
     @When("Click on Add new button")
     public void click_on_Add_new_button() {
+        logger.info("======Adding New Customer=====");
         addCus.clickAddBtn();
     }
 
@@ -103,6 +124,8 @@ public class Steps extends BaseClass {
         addCus.setGender("Male");
         addCus.setDob("10/20/2019");
         addCus.setCompanyName("Toyota");
+        //Thread.sleep(2000);
+        //addCus.setNewsLetter("Your store name");
         addCus.setCustomerRole("Guest");
         addCus.setVendors("Vendor 2");
         addCus.setContent("This is for testing purpose-----");
@@ -111,6 +134,7 @@ public class Steps extends BaseClass {
 
     @When("Click on Save button")
     public void click_on_Save_button() throws InterruptedException {
+        logger.info("======Clicking Save Button=======");
         addCus.clickSave();
         Thread.sleep(3000);
     }
@@ -118,6 +142,46 @@ public class Steps extends BaseClass {
     @Then("User can view confirmation message {string}")
     public void user_can_view_confirmation_message(String message) {
         Assert.assertTrue(driver.findElement(By.tagName("body")).getText().contains("The new customer has been added successfully"));
+    }
+    //Steps for Searching By Email Id
+    @When("Enter customer Email")
+    public void enter_customer_Email() {
+        logger.info("======Entering Customer Email=====");
+        sp = new SearchCustomerPage(driver);
+        sp.setTxtEmail("epYoN@gmail.com");
+    }
+
+    @When("Click on search button")
+    public void click_on_search_button() throws InterruptedException {
+        logger.info("======Clicking Search Button=====");
+        sp.clickSearch();
+        Thread.sleep(5000);
+    }
+
+    @Then("User should found email in the search table")
+    public void user_should_found_email_in_the_search_table() {
+        boolean status = sp.searchByEmail("epYoN@gmail.com");
+        //Assert.assertEquals(status,true);
+    }
+
+    //Search by Customer Name
+    @When("Enter customer FirstName")
+    public void enter_customer_FirstName() {
+        logger.info("======Entering Customer FirstName=====");
+        sp = new SearchCustomerPage(driver);
+        sp.setFirstName("sharif");
+    }
+
+    @When("Enter customer LastName")
+    public void enter_customer_LastName() {
+        logger.info("======Entering Customer LastName=====");
+        sp.setLastName("uddin");
+    }
+
+    @Then("User should found Name in the search table")
+    public void user_should_found_Name_in_the_search_table() {
+        sp.searchByName("sharif uddin");
+
     }
 
 }

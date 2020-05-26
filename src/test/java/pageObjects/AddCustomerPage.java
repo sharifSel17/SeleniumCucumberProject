@@ -24,6 +24,7 @@ public class AddCustomerPage {
     By rdMaleGender = By.id("Gender_Male");
     By rdFemaleGender = By.id("Gender_Female");
     By DoB = By.xpath("//input[@id='DateOfBirth']");
+    //By nLetter = By.xpath("//*[@id='SelectedNewsletterSubscriptionStoreIds']/option");
     By customerRole = By.xpath("//div[@class='k-multiselect-wrap k-floatwrap']");
     By roleAdministrators = By.xpath("//li[contains(text(),'Administrators')]");
     By roleRegister = By.xpath("//li[contains(text(),'Registered')]");
@@ -68,24 +69,25 @@ public class AddCustomerPage {
     public void setDob(String dob){
         dr.findElement(DoB).sendKeys(dob);
     }
-    public void setCompanyName(String cName){
+    public void setCompanyName(String cName) throws InterruptedException {
+        Thread.sleep(3000);
         dr.findElement(companyName).sendKeys(cName);
     }
     public void setCustomerRole(String role) throws InterruptedException {
         if(!role.equals("Vendors")){
-            dr.findElement(By.xpath("//select[@id=\"SelectedCustomerRoleIds\"]/option"));
+            dr.findElement(By.xpath("//*[@id='SelectedCustomerRoleIds_taglist']/li/span"));
         }
 
             dr.findElement(customerRole).click();
             WebElement listItems;
             Thread.sleep(4000);
-        if (role.equals("")){
+        if (role.equals("Administrators")){
             listItems = dr.findElement(roleAdministrators);
         }
-        else if(role.equals("")){
+        else if(role.equals("Guests")){
             listItems = dr.findElement(roleGuests);
         }
-        else if(role.equals("")){
+        else if(role.equals("Registered")){
             listItems = dr.findElement(roleRegister);
         }
         else {
@@ -95,9 +97,13 @@ public class AddCustomerPage {
         JavascriptExecutor js =  (JavascriptExecutor) dr;
         js.executeScript("arguments[0].click();",listItems);
     }
-    public void setVendors(String vendors){
+    /*public void setNewsLetter(String news){
+        Select dropDown =new Select(dr.findElement(nLetter));
+        dropDown.selectByVisibleText(news);
+    }*/
+    public void setVendors(String value){
         Select dropDown =new Select(dr.findElement(listVendors));
-        dropDown.selectByValue(vendors);
+        dropDown.selectByVisibleText(value);
     }
 
     public void setGender(String gender){
@@ -115,6 +121,9 @@ public class AddCustomerPage {
     }
     public void clickSave(){
         dr.findElement(submit).click();
+    }
+    public void closeWindow(){
+        dr.quit();
     }
 
 
